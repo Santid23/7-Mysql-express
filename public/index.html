@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySQL Express</title>
+</head>
+<body>
+    
+    <div id="menus"></div>
+    <br>
+    <h2 id="mensaje"></h2>
+
+    <script>
+        fetch('/api/menus')
+        .then((res)=>res.json())
+        .then((datos) => {
+            let salida = ""
+
+            datos.results.forEach(menu => {
+                salida += `<li>MENU ${menu.numero}:
+                    <span>${menu.plato1}</span> 
+                    <span>${menu.postre}</span>
+                    <span>${menu.plato}</span>
+                    <span>${menu.precio} €</span>
+                    <button type="button" onclick="borrarMenu('${menu.numero}')">Borrar</button></li>`
+            });
+
+            document.getElementById('menus').innerHTML = `<ul>${salida}</ul>`
+        })
+
+        function borrarMenu(numero) {
+            fetch(`/api/borrarMenu/${numero}`, {
+                method: "DELETE"
+            })
+            .then((res)=>res.json())
+            .then((datos) => {
+                console.log('Eliminado', datos)
+                document.getElementById('mensaje').innerHTML = 'El menú ha sido eliminado'
+            })
+        }
+    </script>
+</body>
+</html>
